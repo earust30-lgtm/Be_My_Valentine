@@ -11,6 +11,31 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Preloading Page */
+#startPage {
+  cursor: pointer;
+  font-size: 2.5rem;
+  animation: bounce 1.5s infinite;
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+#mainPage {
+  display: none;
   padding-top: 60px;
 }
 
@@ -53,26 +78,42 @@ audio {
 </head>
 <body>
 
-<h1>Will you be my Valentine? 💘</h1>
+<!-- Preloading Page -->
+<div id="startPage">Click to Start 😉</div>
 
-<img src="minionlove.gif" alt="Minion Love" class="minion-gif" id="minionGif">
+<!-- Main Valentine Page -->
+<div id="mainPage">
+  <h1>Will you be my Valentine? 💘</h1>
+  <img src="minionlove.gif" alt="Minion Love" class="minion-gif" id="minionGif">
 
-<div class="buttons">
-  <button id="yesBtn">Yes</button>
-  <button id="noBtn">No</button>
+  <div class="buttons">
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+  </div>
+
+  <!-- Suspenseful music -->
+  <audio id="suspenseMusic" loop>
+    <source src="suspense-music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Romantic music -->
+  <audio id="romanticMusic" loop>
+    <source src="romantic-music.mp3" type="audio/mpeg">
+  </audio>
 </div>
 
-<!-- Suspenseful music (pre-Yes) -->
-<audio id="suspenseMusic" loop>
-  <source src="suspense-music.mp3" type="audio/mpeg">
-</audio>
-
-<!-- Romantic music (after Yes) -->
-<audio id="romanticMusic" loop>
-  <source src="romantic-music.mp3" type="audio/mpeg">
-</audio>
-
 <script>
+// -------------------- Preloading Page --------------------
+const startPage = document.getElementById("startPage");
+const mainPage = document.getElementById("mainPage");
+const suspenseMusic = document.getElementById("suspenseMusic");
+
+startPage.addEventListener("click", () => {
+  startPage.style.display = "none";
+  mainPage.style.display = "block";
+  suspenseMusic.play().catch(e => console.log("Autoplay blocked:", e));
+});
+
 // -------------------- Floating Hearts --------------------
 function createHeart() {
   const heart = document.createElement("div");
@@ -105,17 +146,12 @@ const noTexts = [
   "Last chance"
 ];
 let noIndex = 0;
-let yesSize = 1; // Initial scale
+let yesSize = 1;
 
 noBtn.addEventListener("click", () => {
-  // Update text
   noBtn.textContent = noTexts[noIndex];
-
-  // Grow Yes button
   yesSize += 0.15;
   yesBtn.style.transform = `scale(${yesSize})`;
-
-  // Remove No button after second "Last chance"
   if (noIndex === noTexts.length - 1) {
     noBtn.style.display = "none";
   } else {
@@ -141,41 +177,20 @@ function createFloatingKiss() {
   setTimeout(() => kiss.remove(), 6000);
 }
 
-// -------------------- Suspense Music (Pre-Yes) --------------------
-const suspenseMusic = document.getElementById("suspenseMusic");
-let suspenseStarted = false;
-
-function startSuspenseMusic() {
-  if (!suspenseStarted) {
-    suspenseMusic.play()
-      .then(() => console.log("Suspense music started"))
-      .catch(e => console.log("Autoplay blocked:", e));
-    suspenseStarted = true;
-  }
-}
-
-// Start suspense music on first click or key press anywhere
-document.addEventListener("click", startSuspenseMusic, { once: true });
-document.addEventListener("keydown", startSuspenseMusic, { once: true });
-
 // -------------------- Yes Button Click --------------------
 yesBtn.addEventListener("click", () => {
-  // Stop suspense music and play romantic music
   const romanticMusic = document.getElementById("romanticMusic");
   suspenseMusic.pause();
   romanticMusic.play().catch(e => console.log("Music play blocked:", e));
 
-  // Swap GIF to fireworks
   const minion = document.getElementById("minionGif");
   minion.src = "fireworks-exploding-heart.gif";
 
-  // Update text
   const buttonsDiv = document.querySelector(".buttons");
   buttonsDiv.innerHTML = `
     <h2>YAYYY! I LOVE YOU &lt;3<br>I'll see you in Washington xoxo</h2>
   `;
 
-  // Start floating kisses continuously
   setInterval(createFloatingKiss, 300);
 });
 </script>
