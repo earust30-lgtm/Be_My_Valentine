@@ -39,7 +39,7 @@ button {
   color: white;
   cursor: pointer;
   margin: 15px;
-  transition: transform 0.2s;
+  transition: transform 0.3s ease;
 }
 
 button:hover {
@@ -96,22 +96,25 @@ const noTexts = [
   "Babe pleaseeeeee",
   "Just say yes babe",
   "You better say yes",
-  "Last chance",
   "Last chance"
 ];
 let noIndex = 0;
-let yesSize = 1;
+let yesSize = 1; // Initial scale
 
 noBtn.addEventListener("click", () => {
   // Show current text
   noBtn.textContent = noTexts[noIndex];
 
-  // Increase Yes button slightly
-  yesSize += 0.05;
+  // Increase Yes button size much more dramatically
+  yesSize += 0.15;
   yesBtn.style.transform = `scale(${yesSize})`;
 
-  // Prepare next text for the next click
-  if (noIndex < noTexts.length - 1) noIndex++;
+  // Remove No button on last click
+  if (noIndex === noTexts.length - 1) {
+    noBtn.style.display = "none";
+  } else {
+    noIndex++;
+  }
 });
 
 // Yes button click
