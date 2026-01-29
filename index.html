@@ -73,7 +73,7 @@ audio {
 </audio>
 
 <script>
-// Floating hearts
+// -------------------- Floating Hearts --------------------
 function createHeart() {
   const heart = document.createElement("div");
   heart.style.position = "absolute";
@@ -92,7 +92,7 @@ function createHeart() {
 }
 setInterval(createHeart, 300);
 
-// No button sequential text
+// -------------------- No Button Sequence --------------------
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const noTexts = [
@@ -108,22 +108,22 @@ let noIndex = 0;
 let yesSize = 1; // Initial scale
 
 noBtn.addEventListener("click", () => {
-  // Show current text
+  // Update text
   noBtn.textContent = noTexts[noIndex];
 
-  // Increase Yes button size
+  // Grow Yes button
   yesSize += 0.15;
   yesBtn.style.transform = `scale(${yesSize})`;
 
-  // Only remove button after the second "Last chance"
+  // Remove No button after second "Last chance"
   if (noIndex === noTexts.length - 1) {
-    noBtn.style.display = "none"; // remove No button
+    noBtn.style.display = "none";
   } else {
     noIndex++;
   }
 });
 
-// Function to create floating kiss emojis continuously
+// -------------------- Floating Kiss Emojis --------------------
 function createFloatingKiss() {
   const kiss = document.createElement("div");
   kiss.style.position = "absolute";
@@ -141,24 +141,31 @@ function createFloatingKiss() {
   setTimeout(() => kiss.remove(), 6000);
 }
 
-// Start suspense music on first click anywhere
+// -------------------- Suspense Music (Pre-Yes) --------------------
 const suspenseMusic = document.getElementById("suspenseMusic");
 let suspenseStarted = false;
-document.addEventListener("click", () => {
+
+function startSuspenseMusic() {
   if (!suspenseStarted) {
-    suspenseMusic.play().catch(e => console.log("Music blocked:", e));
+    suspenseMusic.play()
+      .then(() => console.log("Suspense music started"))
+      .catch(e => console.log("Autoplay blocked:", e));
     suspenseStarted = true;
   }
-}, { once: true });
+}
 
-// Yes button click
+// Start suspense music on first click or key press anywhere
+document.addEventListener("click", startSuspenseMusic, { once: true });
+document.addEventListener("keydown", startSuspenseMusic, { once: true });
+
+// -------------------- Yes Button Click --------------------
 yesBtn.addEventListener("click", () => {
-  // Stop suspense music and start romantic music
+  // Stop suspense music and play romantic music
   const romanticMusic = document.getElementById("romanticMusic");
   suspenseMusic.pause();
   romanticMusic.play().catch(e => console.log("Music play blocked:", e));
 
-  // Change GIF to fireworks
+  // Swap GIF to fireworks
   const minion = document.getElementById("minionGif");
   minion.src = "fireworks-exploding-heart.gif";
 
