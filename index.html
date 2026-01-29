@@ -62,12 +62,12 @@ audio {
   <button id="noBtn">No</button>
 </div>
 
-<!-- Suspenseful music (page load) -->
-<audio id="suspenseMusic" loop autoplay>
+<!-- Suspenseful music (pre-Yes) -->
+<audio id="suspenseMusic" loop>
   <source src="suspense-music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Romantic music (Yes button) -->
+<!-- Romantic music (after Yes) -->
 <audio id="romanticMusic" loop>
   <source src="romantic-music.mp3" type="audio/mpeg">
 </audio>
@@ -111,7 +111,7 @@ noBtn.addEventListener("click", () => {
   // Show current text
   noBtn.textContent = noTexts[noIndex];
 
-  // Increase Yes button size more dramatically
+  // Increase Yes button size
   yesSize += 0.15;
   yesBtn.style.transform = `scale(${yesSize})`;
 
@@ -141,10 +141,19 @@ function createFloatingKiss() {
   setTimeout(() => kiss.remove(), 6000);
 }
 
+// Start suspense music on first click anywhere
+const suspenseMusic = document.getElementById("suspenseMusic");
+let suspenseStarted = false;
+document.addEventListener("click", () => {
+  if (!suspenseStarted) {
+    suspenseMusic.play().catch(e => console.log("Music blocked:", e));
+    suspenseStarted = true;
+  }
+}, { once: true });
+
 // Yes button click
 yesBtn.addEventListener("click", () => {
-  // Stop suspenseful music and start romantic music
-  const suspenseMusic = document.getElementById("suspenseMusic");
+  // Stop suspense music and start romantic music
   const romanticMusic = document.getElementById("romanticMusic");
   suspenseMusic.pause();
   romanticMusic.play().catch(e => console.log("Music play blocked:", e));
